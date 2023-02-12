@@ -44,10 +44,10 @@ public abstract class Layer {
         double[] vector = new double[length*rows*cols];
 
         int i = 0;
-        for(int l = 0; l < length; l++ ){
-            for(int r = 0; r < rows; r++){
-                for(int c = 0; c < cols; c++){
-                    vector[i] = input.get(l)[r][c];
+        for (double[][] doubles : input) {
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    vector[i] = doubles[r][c];
                     i++;
                 }
             }

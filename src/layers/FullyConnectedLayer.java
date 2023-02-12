@@ -5,13 +5,12 @@ import java.util.Random;
 
 public class FullyConnectedLayer extends Layer{
 
-    private long SEED;
-    private final double leak = 0.01;
+    private final long SEED;
 
-    private double[][] _weights;
-    private int _inLength;
-    private int _outLength;
-    private double _learningRate;
+    private final double[][] _weights;
+    private final int _inLength;
+    private final int _outLength;
+    private final double _learningRate;
 
     private double[] lastZ;
     private double[] lastX;
@@ -37,16 +36,12 @@ public class FullyConnectedLayer extends Layer{
         for(int i = 0; i < _inLength; i++){
             for(int j = 0; j < _outLength; j++){
                 z[j] += input[i]*_weights[i][j];
+
+                out[j] = leakyReLU(z[j]);
             }
         }
 
         lastZ = z;
-
-        for(int i = 0; i < _inLength; i++){
-            for(int j = 0; j < _outLength; j++){
-                out[j] = leakyReLU(z[j]);
-            }
-        }
 
         return out;
     }

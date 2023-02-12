@@ -5,12 +5,12 @@ import java.util.List;
 
 public class MaxPoolLayer extends Layer{
 
-    private int _stepSize;
-    private int _windowSize;
+    private final int _stepSize;
+    private final int _windowSize;
 
-    private int _inLength;
-    private int _inRows;
-    private int _inCols;
+    private final int _inLength;
+    private final int _inRows;
+    private final int _inCols;
 
     List<int[][]> _lastMaxRow;
     List<int[][]> _lastMaxCol;

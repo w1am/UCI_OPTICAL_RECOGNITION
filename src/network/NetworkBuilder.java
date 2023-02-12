@@ -10,10 +10,9 @@ import java.util.List;
 
 public class NetworkBuilder {
 
-    private NeuralNetwork net;
-    private int _inputRows;
-    private int _inputCols;
-    private double _scaleFactor;
+    private final int _inputRows;
+    private final int _inputCols;
+    private final double _scaleFactor;
     List<Layer> _layers;
 
     public NetworkBuilder(int _inputRows, int _inputCols, double _scaleFactor) {
@@ -52,8 +51,7 @@ public class NetworkBuilder {
     }
 
     public NeuralNetwork build(){
-        net = new NeuralNetwork(_layers, _scaleFactor);
-        return net;
+        return new NeuralNetwork(_layers, _scaleFactor);
     }
 
 }

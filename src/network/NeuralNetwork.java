@@ -69,9 +69,8 @@ public class NeuralNetwork {
         inList.add(multiply(image.getData(), (1.0/scaleFactor)));
 
         double[] out = _layers.get(0).getOutput(inList);
-        int guess = getMaxIndex(out);
 
-        return guess;
+        return getMaxIndex(out);
     }
 
     public float test (List<Image> images){
