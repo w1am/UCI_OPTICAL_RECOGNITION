@@ -2,10 +2,8 @@ package data;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -15,50 +13,35 @@ import java.util.Random;
  */
 public class DataReader {
 
-    private double[][] rotateClockwise(double[][] data, int rows, int cols) {
-        double[][] rotatedData = new double[cols][rows];
+    private static final double DEGREE_OF_ROTATION = 0.2;
+
+    public double[][] rotateRight(double[][] data, int rows, int cols) {
+        double[][] rotatedData = new double[rows][cols];
+        int angle = (int) (rows * cols * DEGREE_OF_ROTATION);
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                rotatedData[j][rows - 1 - i] = data[i][j];
+                int newRow = (i + angle) % rows;
+                int newCol = (j + angle) % cols;
+                rotatedData[newRow][newCol] = data[i][j];
             }
         }
 
         return rotatedData;
     }
 
-    private double[][] rotateCounterClockwise(double[][] data, int rows, int cols) {
-        double[][] rotatedData = new double[cols][rows];
+    public double[][] rotateLeft(double[][] data, int rows, int cols) {
+        double[][] rotated = new double[rows][cols];
+        int rotationAmount = (int) (cols * DEGREE_OF_ROTATION);
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                rotatedData[cols - 1 - j][i] = data[i][j];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int rotatedCol = (col + rotationAmount) % cols;
+                rotated[row][rotatedCol] = data[row][col];
             }
         }
 
-        return rotatedData;
-    }
-
-    private double[][] flipHorizontally(double[][] data, int rows, int cols) {
-        double[][] flippedData = new double[rows][cols];
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                flippedData[i][cols - 1 - j] = data[i][j];
-            }
-        }
-
-        return flippedData;
-    }
-
-    private double[][] flipVertically(double[][] data, int rows, int cols) {
-        double[][] flippedData = new double[rows][cols];
-
-        for (int i = 0; i < rows; i++) {
-            System.arraycopy(data[i], 0, flippedData[rows - 1 - i], 0, cols);
-        }
-
-        return flippedData;
+        return rotated;
     }
 
     public List<Image> readData(String path) throws IOException {
@@ -88,13 +71,11 @@ public class DataReader {
                 }
 
                 if (path.equals("src/data/train.csv")) {
-                    int flip = random.nextInt(4) + 1;
+                    int flip = random.nextInt(2) + 1;
                     double[][] augmentedData = new double[rows][cols];
                     switch (flip) {
-                        case 1 -> augmentedData = flipHorizontally(data, rows, cols);
-                        case 2 -> augmentedData = flipVertically(data, rows, cols);
-                        case 3 -> augmentedData = rotateClockwise(data, rows, cols);
-                        case 4 -> augmentedData = rotateCounterClockwise(data, rows, cols);
+                        case 1 -> augmentedData = rotateLeft(data, rows, cols);
+                        case 2 -> augmentedData = rotateRight(data, rows, cols);
                     }
 
                     images.add(new Image(augmentedData, label));

@@ -22,20 +22,30 @@ public class Main {
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
 
-        NetworkBuilder builder = new NetworkBuilder(8,8,12*100);
-        builder.addConvolutionLayer(15, 4, 1, 0.4, SEED);
-        builder.addMaxPoolLayer(2,1);
-        builder.addFullyConnectedLayer(10, 0.4, SEED);
-
-//        NetworkBuilder builder = new NetworkBuilder(8,8,100);
-//        builder.addConvolutionLayer(12, 2, 1, 0.35, SEED);
+//        NetworkBuilder builder = new NetworkBuilder(8,8,12*100);
+//        builder.addConvolutionLayer(15, 4, 1, 0.4, SEED);
 //        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.35, SEED);
+//        builder.addFullyConnectedLayer(10, 0.4, SEED);
 
 //        NetworkBuilder builder = new NetworkBuilder(8,8,12*100);
-//        builder.addConvolutionLayer(14, 2, 1, 0.40, SEED);
+//        builder.addConvolutionLayer(14, 3, 1, 0.32, SEED);
 //        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.40, SEED);
+//        builder.addFullyConnectedLayer(10, 0.32, SEED);
+
+//        NetworkBuilder builder = new NetworkBuilder(8,8,5*100);
+//        builder.addConvolutionLayer(12, 4, 1, 0.43, SEED);
+//        builder.addMaxPoolLayer(2,1);
+//        builder.addFullyConnectedLayer(10, 0.43, SEED);
+
+//        NetworkBuilder builder = new NetworkBuilder(8,8,100);
+//        builder.addConvolutionLayer(20, 2, 1, 0.43, SEED);
+//        builder.addMaxPoolLayer(2,1);
+//        builder.addFullyConnectedLayer(10, 0.43, SEED);
+
+        NetworkBuilder builder = new NetworkBuilder(8,8,100);
+        builder.addConvolutionLayer(20, 2, 1, 0.41, SEED);
+        builder.addMaxPoolLayer(2,1);
+        builder.addFullyConnectedLayer(10, 0.41, SEED);
 
         NeuralNetwork net = builder.build();
 
