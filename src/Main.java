@@ -3,20 +3,21 @@ import data.Image;
 import network.NetworkBuilder;
 import network.NeuralNetwork;
 
+import java.io.IOException;
 import java.util.List;
 
 import static java.util.Collections.shuffle;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         long SEED = 123;
 
         System.out.println("Starting data loading...");
 
-        List<Image> imagesTest = new DataReader().readData("src/data/test.csv");
         List<Image> imagesTrain = new DataReader().readData("src/data/train.csv");
+        List<Image> imagesTest = new DataReader().readData("src/data/test.csv");
 
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
@@ -25,6 +26,16 @@ public class Main {
         builder.addConvolutionLayer(15, 4, 1, 0.4, SEED);
         builder.addMaxPoolLayer(2,1);
         builder.addFullyConnectedLayer(10, 0.4, SEED);
+
+//        NetworkBuilder builder = new NetworkBuilder(8,8,100);
+//        builder.addConvolutionLayer(12, 2, 1, 0.35, SEED);
+//        builder.addMaxPoolLayer(2,1);
+//        builder.addFullyConnectedLayer(10, 0.35, SEED);
+
+//        NetworkBuilder builder = new NetworkBuilder(8,8,12*100);
+//        builder.addConvolutionLayer(14, 2, 1, 0.40, SEED);
+//        builder.addMaxPoolLayer(2,1);
+//        builder.addFullyConnectedLayer(10, 0.40, SEED);
 
         NeuralNetwork net = builder.build();
 

@@ -9,6 +9,10 @@ public class Image {
         return data;
     }
 
+    public void setData(double[][] data) {
+        this.data = data;
+    }
+
     public int getLabel() {
         return label;
     }
