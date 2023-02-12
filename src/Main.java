@@ -42,17 +42,22 @@ public class Main {
 //        builder.addMaxPoolLayer(2,1);
 //        builder.addFullyConnectedLayer(10, 0.43, SEED);
 
+//        NetworkBuilder builder = new NetworkBuilder(8,8,100);
+//        builder.addConvolutionLayer(20, 2, 1, 0.41, SEED);
+//        builder.addMaxPoolLayer(2,1);
+//        builder.addFullyConnectedLayer(10, 0.41, SEED);
+
         NetworkBuilder builder = new NetworkBuilder(8,8,100);
-        builder.addConvolutionLayer(20, 2, 1, 0.41, SEED);
+        builder.addConvolutionLayer(18, 2, 1, 0.35, SEED);
         builder.addMaxPoolLayer(2,1);
-        builder.addFullyConnectedLayer(10, 0.41, SEED);
+        builder.addFullyConnectedLayer(10, 0.35, SEED);
 
         NeuralNetwork net = builder.build();
 
         float rate = net.test(imagesTest);
         System.out.println("Pre training success rate: " + rate);
 
-        int epochs = 200;
+        int epochs = 100;
 
         for(int i = 0; i < epochs; i++){
             shuffle(imagesTrain);

@@ -44,7 +44,7 @@ public class FullyConnectedLayer extends Layer{
 
         for(int i = 0; i < _inLength; i++){
             for(int j = 0; j < _outLength; j++){
-                out[j] = reLu(z[j]);
+                out[j] = leakyReLU(z[j]);
             }
         }
 
@@ -84,7 +84,7 @@ public class FullyConnectedLayer extends Layer{
 
             for(int j = 0; j < _outLength; j++){
 
-                dOdz = derivativeReLu(lastZ[j]);
+                dOdz = derivativeLeakyReLU(lastZ[j]);
                 dzdw = lastX[k];
                 dzdx = _weights[k][j];
 
@@ -139,19 +139,21 @@ public class FullyConnectedLayer extends Layer{
         }
     }
 
-    public double reLu(double input){
-        if(input <= 0){
-            return 0;
-        } else {
+    public double leakyReLU(double input) {
+        final double alpha = 0.01;
+        if (input > 0) {
             return input;
+        } else {
+            return alpha * input;
         }
     }
 
-    public double derivativeReLu(double input){
-        if(input <= 0){
-            return leak;
+    public double derivativeLeakyReLU(double input) {
+        final double alpha = 0.01;
+        if (input > 0) {
+            return 1.0;
         } else {
-            return 1;
+            return alpha;
         }
     }
 
