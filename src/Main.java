@@ -22,31 +22,6 @@ public class Main {
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
 
-//        NetworkBuilder builder = new NetworkBuilder(8,8,12*100);
-//        builder.addConvolutionLayer(15, 4, 1, 0.4, SEED);
-//        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.4, SEED);
-
-//        NetworkBuilder builder = new NetworkBuilder(8,8,12*100);
-//        builder.addConvolutionLayer(14, 3, 1, 0.32, SEED);
-//        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.32, SEED);
-
-//        NetworkBuilder builder = new NetworkBuilder(8,8,5*100);
-//        builder.addConvolutionLayer(12, 4, 1, 0.43, SEED);
-//        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.43, SEED);
-
-//        NetworkBuilder builder = new NetworkBuilder(8,8,100);
-//        builder.addConvolutionLayer(20, 2, 1, 0.43, SEED);
-//        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.43, SEED);
-
-//        NetworkBuilder builder = new NetworkBuilder(8,8,100);
-//        builder.addConvolutionLayer(20, 2, 1, 0.41, SEED);
-//        builder.addMaxPoolLayer(2,1);
-//        builder.addFullyConnectedLayer(10, 0.41, SEED);
-
         NetworkBuilder builder = new NetworkBuilder(8,8,100);
         builder.addConvolutionLayer(18, 2, 1, 0.35, SEED);
         builder.addMaxPoolLayer(2,1);
@@ -54,15 +29,29 @@ public class Main {
 
         NeuralNetwork net = builder.build();
 
+        int epochs = 100;
+        int wait = 10;
+        double bestAccuracy = 0;
+        int count = 0;
+
         float rate = net.test(imagesTest);
         System.out.println("Pre training success rate: " + rate);
-
-        int epochs = 100;
 
         for(int i = 0; i < epochs; i++){
             shuffle(imagesTrain);
             net.train(imagesTrain);
             rate = net.test(imagesTest);
+
+            if (rate > bestAccuracy) {
+                bestAccuracy = rate;
+                count = 0;
+            } else {
+                // Early stopping helps to prevent over-fitting by stopping the training
+                // process when the validation loss stops improving.
+                count++;
+                if (count == wait) break;
+            }
+
             System.out.println("Success rate after round " + i + ": " + rate);
         }
     }
