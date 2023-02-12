@@ -20,11 +20,9 @@ public class NeuralNetwork {
         linkLayers();
     }
 
-    private void linkLayers(){
+    private void linkLayers() {
 
-        if(_layers.size() <= 1){
-            return;
-        }
+        if(_layers.size() <= 1) return;
 
         for(int i = 0; i < _layers.size(); i++){
             if(i == 0){
@@ -66,37 +64,38 @@ public class NeuralNetwork {
 
     public int guess(Image image){
         List<double[][]> inList = new ArrayList<>();
-        inList.add(multiply(image.getData(), (1.0/scaleFactor)));
+
+        inList.add(multiply(image.getData(), (1.0 / scaleFactor)));
 
         double[] out = _layers.get(0).getOutput(inList);
 
         return getMaxIndex(out);
     }
 
-    public float test (List<Image> images){
+    public float test(List<Image> images) {
         int correct = 0;
 
-        for(Image img: images){
+        for (Image img: images) {
             int guess = guess(img);
 
-            if(guess == img.getLabel()){
+            if (guess == img.getLabel()) {
                 correct++;
             }
         }
 
-        return((float)correct/images.size());
+        return((float) correct / images.size());
     }
 
-    public void train (List<Image> images){
+    public void train(List<Image> images) {
 
         for(Image img:images){
             List<double[][]> inList = new ArrayList<>();
-            inList.add(multiply(img.getData(), (1.0/scaleFactor)));
+            inList.add(multiply(img.getData(), (1.0 / scaleFactor)));
 
             double[] out = _layers.get(0).getOutput(inList);
             double[] dldO = getErrors(out, img.getLabel());
 
-            _layers.get((_layers.size()-1)).backPropagation(dldO);
+            _layers.get((_layers.size() - 1)).backPropagation(dldO);
         }
 
     }

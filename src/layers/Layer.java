@@ -4,16 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Layer {
-    public Layer get_nextLayer() {
-        return _nextLayer;
-    }
 
     public void set_nextLayer(Layer _nextLayer) {
         this._nextLayer = _nextLayer;
-    }
-
-    public Layer get_previousLayer() {
-        return _previousLayer;
     }
 
     public void set_previousLayer(Layer _previousLayer) {

@@ -21,10 +21,11 @@ public class MatrixUtility {
         double[] out = new double[a.length];
 
         for(int i = 0; i < a.length; i++){
-                out[i] = a[i] + b[i];
-
+            out[i] = a[i] + b[i];
         }
+
         return out;
+
     }
 
     public static double[][] multiply(double[][] a, double scalar){
@@ -46,12 +47,11 @@ public class MatrixUtility {
         double[] out = new double[a.length];
 
         for(int i = 0; i < a.length; i++){
-                out[i] = a[i]*scalar;
-
+            out[i] = a[i] * scalar;
         }
+
         return out;
+
     }
-
-
 
 }

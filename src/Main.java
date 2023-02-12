@@ -37,6 +37,8 @@ public class Main {
         float rate = net.test(imagesTest);
         System.out.println("Pre training success rate: " + rate);
 
+        // Early stopping helps to prevent over-fitting by stopping the training
+        // process when the validation loss stops improving.
         for(int i = 0; i < epochs; i++){
             shuffle(imagesTrain);
             net.train(imagesTrain);
@@ -46,8 +48,6 @@ public class Main {
                 bestAccuracy = rate;
                 count = 0;
             } else {
-                // Early stopping helps to prevent over-fitting by stopping the training
-                // process when the validation loss stops improving.
                 count++;
                 if (count == wait) break;
             }
