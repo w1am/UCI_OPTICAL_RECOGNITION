@@ -26,6 +26,12 @@ public class FullyConnectedLayer extends Layer{
         setRandomWeights();
     }
 
+    /**
+     * Performs a forward pass on a fully connected layer.
+     * x -w-> z -f-> y <- dL/dy
+     * @param input The input to the layer
+     * @return The output of the layer
+     */
     public double[] fullyConnectedForwardPass(double[] input){
 
         lastX = input;
@@ -33,17 +39,23 @@ public class FullyConnectedLayer extends Layer{
         double[] z = new double[_outLength];
         double[] out = new double[_outLength];
 
-        for(int i = 0; i < _inLength; i++){
-            for(int j = 0; j < _outLength; j++){
-                z[j] += input[i]*_weights[i][j];
+        // For each input node, calculate the dot product with the
+        // weights and apply activation function.
+        for(int currentInputIndex = 0; currentInputIndex < _inLength; currentInputIndex++){
+            for(int currentOutputIndex = 0; currentOutputIndex < _outLength; currentOutputIndex++){
+                // Calculate the dot product of the input and the weights
+                z[currentOutputIndex] += input[currentInputIndex] * _weights[currentInputIndex][currentOutputIndex];
 
-                out[j] = leakyReLU(z[j]);
+                // Apply activation function
+                out[currentOutputIndex] = leakyReLU(z[currentOutputIndex]);
             }
         }
 
+        // Store the dot product for use in backpropagation
         lastZ = z;
 
         return out;
+
     }
 
     @Override
@@ -54,15 +66,13 @@ public class FullyConnectedLayer extends Layer{
 
     @Override
     public double[] getOutput(double[] input) {
-        double[] forwardPass = fullyConnectedForwardPass(input);
-
-        if(_nextLayer != null){
-            return _nextLayer.getOutput(forwardPass);
-        } else {
-            return forwardPass;
-        }
+        return fullyConnectedForwardPass(input);
     }
 
+    /**
+     * Performs a backpropagation step on a fully connected layer.
+     * @param dLdO The derivative of the loss with respect to the output of the layer
+     */
     @Override
     public void backPropagation(double[] dLdO) {
 
@@ -88,14 +98,13 @@ public class FullyConnectedLayer extends Layer{
                 _weights[k][j] -= dLdw*_learningRate;
 
                 dLdX_sum += dLdO[j]*dOdz*dzdx;
+
             }
 
             dLdX[k] = dLdX_sum;
         }
 
-        if(_previousLayer!= null){
-            _previousLayer.backPropagation(dLdX);
-        }
+        if (_previousLayer!= null) _previousLayer.backPropagation(dLdX);
     }
 
     @Override

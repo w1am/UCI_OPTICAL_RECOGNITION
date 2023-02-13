@@ -34,15 +34,23 @@ public class NeuralNetwork {
                 _layers.get(i).set_nextLayer(_layers.get(i+1));
             }
         }
+
     }
 
+    /**
+     * Get error for an image based on the output of the network and the correct answer
+     * @param networkOutput the output of the network
+     * @param correctAnswer the correct answer
+     * @return the error
+     */
     public double[] getErrors(double[] networkOutput, int correctAnswer){
         int numClasses = networkOutput.length;
-
         double[] expected = new double[numClasses];
 
+        // Set the expected output to 1 for the correct answer
         expected[correctAnswer] = 1;
 
+        // Return the difference between the expected and the actual output.
         return add(networkOutput, multiply(expected, -1));
     }
 
@@ -86,16 +94,28 @@ public class NeuralNetwork {
         return((float) correct / images.size());
     }
 
+    /**
+     * Trains the network on a list of images
+     * @param images the list of images to train on
+     */
     public void train(List<Image> images) {
 
-        for(Image img:images){
+        for (Image img:images) {
+
             List<double[][]> inList = new ArrayList<>();
+
+            // Scale the image down to avoid big numbers
             inList.add(multiply(img.getData(), (1.0 / scaleFactor)));
 
+            // Get the output of the network
             double[] out = _layers.get(0).getOutput(inList);
+
+            // Calculate the error based on the output and the label of the image
             double[] dldO = getErrors(out, img.getLabel());
 
+            // Perform back propagation on fully connected layer
             _layers.get((_layers.size() - 1)).backPropagation(dldO);
+
         }
 
     }

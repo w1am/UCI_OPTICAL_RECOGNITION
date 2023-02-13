@@ -42,9 +42,9 @@ public class NetworkBuilder {
 
     public void addFullyConnectedLayer(int outLength, double learningRate, long SEED){
         if(_layers.isEmpty()) {
-            _layers.add(new FullyConnectedLayer(_inputCols*_inputRows, outLength, SEED, learningRate));
+            _layers.add(new FullyConnectedLayer(_inputCols * _inputRows, outLength, SEED, learningRate));
         } else {
-            Layer prev = _layers.get(_layers.size()-1);
+            Layer prev = _layers.get(_layers.size() - 1);
             _layers.add(new FullyConnectedLayer(prev.getOutputElements(), outLength, SEED, learningRate));
         }
 
