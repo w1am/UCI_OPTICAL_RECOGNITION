@@ -20,18 +20,29 @@ public class NeuralNetwork {
         linkLayers();
     }
 
+    /**
+     * Links the layers together so that the output of one layer
+     * is the input of the next
+     */
     private void linkLayers() {
 
         if(_layers.size() <= 1) return;
 
         for(int i = 0; i < _layers.size(); i++){
-            if(i == 0){
+            // current layer is first layer
+            if (i == 0) {
                 _layers.get(i).set_nextLayer(_layers.get(i+1));
-            } else if (i == _layers.size()-1){
+            }
+
+            // current layer is last layer
+            else if (i == _layers.size() - 1){
                 _layers.get(i).set_previousLayer(_layers.get(i-1));
-            } else {
-                _layers.get(i).set_previousLayer(_layers.get(i-1));
-                _layers.get(i).set_nextLayer(_layers.get(i+1));
+            }
+
+            // Middle layer
+            else {
+                _layers.get(i).set_previousLayer(_layers.get(i - 1));
+                _layers.get(i).set_nextLayer(_layers.get(i + 1));
             }
         }
 
@@ -54,6 +65,11 @@ public class NeuralNetwork {
         return add(networkOutput, multiply(expected, -1));
     }
 
+    /**
+     * Returns the index of the maximum value in the input array
+     * @param in the input array
+     * @return the index of the maximum value
+     */
     private int getMaxIndex(double[] in){
 
         double max = 0;
@@ -70,20 +86,33 @@ public class NeuralNetwork {
         return index;
     }
 
+    /**
+     * Guesses the label of the image based on the output of the first layer of the network
+     * @param image the image to guess
+     * @return the guessed number
+     */
     public int guess(Image image){
         List<double[][]> inList = new ArrayList<>();
 
+        // Add the data of the image to the input list, normalizing by the scale factor
         inList.add(multiply(image.getData(), (1.0 / scaleFactor)));
 
+        // Get the output from the first layer of the network
         double[] out = _layers.get(0).getOutput(inList);
 
         return getMaxIndex(out);
     }
 
+    /**
+     * Tests the accuracy of the network on a set of images
+     * @param images the list of images to test on
+     * @return the accuracy of the network
+     */
     public float test(List<Image> images) {
         int correct = 0;
 
         for (Image img: images) {
+            // Guess the label of the image
             int guess = guess(img);
 
             if (guess == img.getLabel()) {

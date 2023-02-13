@@ -22,15 +22,17 @@ public class Main {
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
 
-        NetworkBuilder builder = new NetworkBuilder(8,8,100);
-        builder.addConvolutionLayer(18, 2, 1, 0.35, SEED);
+        double LEARNING_RATE = 0.43;
+
+        NetworkBuilder builder = new NetworkBuilder(8,8,2*100);
+        builder.addConvolutionLayer(13, 3, 1, LEARNING_RATE, SEED);
         builder.addMaxPoolLayer(2,1);
-        builder.addFullyConnectedLayer(10, 0.35, SEED);
+        builder.addFullyConnectedLayer(10, LEARNING_RATE, SEED);
 
         NeuralNetwork net = builder.build();
 
-        int epochs = 100;
-        int wait = 10;
+        int epochs = 200;
+        int wait = 15;
         double bestAccuracy = 0;
         int count = 0;
 

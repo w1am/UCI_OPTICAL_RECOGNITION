@@ -11,6 +11,7 @@ public class FullyConnectedLayer extends Layer{
     private final int _inLength;
     private final int _outLength;
     private final double _learningRate;
+    private final double[] _bias = new double[10];
 
     private double[] lastZ;
     private double[] lastX;
@@ -24,6 +25,14 @@ public class FullyConnectedLayer extends Layer{
 
         _weights = new double[_inLength][_outLength];
         setRandomWeights();
+        setRandomBias();
+    }
+
+    private void setRandomBias() {
+        Random random = new Random(SEED);
+        for (int i = 0; i < _bias.length; i++) {
+            _bias[i] = random.nextDouble();
+        }
     }
 
     /**
@@ -95,7 +104,7 @@ public class FullyConnectedLayer extends Layer{
 
                 dLdw = dLdO[j]*dOdz*dzdw;
 
-                _weights[k][j] -= dLdw*_learningRate;
+                _weights[k][j] -= dLdw * _learningRate;
 
                 dLdX_sum += dLdO[j]*dOdz*dzdx;
 
@@ -104,7 +113,7 @@ public class FullyConnectedLayer extends Layer{
             dLdX[k] = dLdX_sum;
         }
 
-        if (_previousLayer!= null) _previousLayer.backPropagation(dLdX);
+        if (_previousLayer != null) _previousLayer.backPropagation(dLdX);
     }
 
     @Override

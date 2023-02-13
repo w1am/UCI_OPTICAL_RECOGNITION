@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class DataReader {
 
-    private static final double DEGREE_OF_ROTATION = 0.2;
+    private static final double DEGREE_OF_ROTATION = 0.13;
 
     public double[][] rotateRight(double[][] data, int rows, int cols) {
         double[][] rotatedData = new double[rows][cols];
@@ -71,9 +71,9 @@ public class DataReader {
                 }
 
                 if (path.equals("src/data/train.csv")) {
-                    int flip = random.nextInt(2) + 1;
+                    int direction = random.nextInt(2) + 1;
                     double[][] augmentedData = new double[rows][cols];
-                    switch (flip) {
+                    switch (direction) {
                         case 1 -> augmentedData = rotateLeft(data, rows, cols);
                         case 2 -> augmentedData = rotateRight(data, rows, cols);
                     }
