@@ -43,7 +43,7 @@ public class Main {
         // process when the validation loss stops improving.
         for(int epochIndex = 0; epochIndex < epochs; epochIndex++){
             shuffle(imagesTrain);
-            double averageCost = net.train(imagesTrain);
+            double averageCost = net.train(epochIndex, imagesTrain);
             rate = net.test(imagesTest);
 
             if (rate > bestAccuracy) {
@@ -54,7 +54,8 @@ public class Main {
                 if (count == wait) break;
             }
 
-            System.out.println("epoch: " + epochIndex + ", cost: " + averageCost + ", accuracy: " + rate);
+//            System.out.println("epoch: " + epochIndex + ", cost: " + averageCost + ", accuracy: " + rate);
+            System.out.println(epochIndex + "," + rate);
         }
     }
 }

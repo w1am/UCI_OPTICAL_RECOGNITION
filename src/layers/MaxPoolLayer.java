@@ -88,13 +88,13 @@ public class MaxPoolLayer extends Layer{
     }
 
     @Override
-    public void backPropagation(double[] dLdO) {
+    public void backPropagation(double[] dLdO, int iteration) {
         List<double[][]> matrixList = vectorToMatrix(dLdO, getOutputLength(), getOutputRows(), getOutputCols());
-        backPropagation(matrixList);
+        backPropagation(matrixList, iteration);
     }
 
     @Override
-    public void backPropagation(List<double[][]> dLdO) {
+    public void backPropagation(List<double[][]> dLdO, int iteration) {
 
         List<double[][]> dXdL = new ArrayList<>();
 
@@ -118,7 +118,7 @@ public class MaxPoolLayer extends Layer{
         }
 
         if(_previousLayer!= null){
-            _previousLayer.backPropagation(dXdL);
+            _previousLayer.backPropagation(dXdL, iteration);
         }
 
     }

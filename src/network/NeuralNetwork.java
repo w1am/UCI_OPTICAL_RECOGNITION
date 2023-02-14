@@ -129,7 +129,7 @@ public class NeuralNetwork {
      * @param images the list of images to train on
      * @return the cost of the network
      */
-    public double train(List<Image> images) {
+    public double train(int epoch, List<Image> images) {
 
         List<Double> costs = new ArrayList<Double>();
 
@@ -153,7 +153,7 @@ public class NeuralNetwork {
             costs.add(cost);
 
             // Perform back propagation on fully connected layer
-            _layers.get((_layers.size() - 1)).backPropagation(dldO);
+            _layers.get((_layers.size() - 1)).backPropagation(dldO, epoch);
 
         }
 

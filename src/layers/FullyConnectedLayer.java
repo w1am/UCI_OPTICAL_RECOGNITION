@@ -11,7 +11,6 @@ public class FullyConnectedLayer extends Layer{
     private final int _inLength;
     private final int _outLength;
     private final double _learningRate;
-    private final double[] _bias = new double[10];
 
     private double[] lastZ;
     private double[] lastX;
@@ -25,14 +24,6 @@ public class FullyConnectedLayer extends Layer{
 
         _weights = new double[_inLength][_outLength];
         setRandomWeights();
-        setRandomBias();
-    }
-
-    private void setRandomBias() {
-        Random random = new Random(SEED);
-        for (int i = 0; i < _bias.length; i++) {
-            _bias[i] = random.nextDouble();
-        }
     }
 
     /**
@@ -83,7 +74,7 @@ public class FullyConnectedLayer extends Layer{
      * @param dLdO The derivative of the loss with respect to the output of the layer
      */
     @Override
-    public void backPropagation(double[] dLdO) {
+    public void backPropagation(double[] dLdO, int iteration) {
 
         double[] dLdX = new double[_inLength];
 
@@ -91,6 +82,10 @@ public class FullyConnectedLayer extends Layer{
         double dzdw;
         double dLdw;
         double dzdx;
+
+        // Calculate the adaptive learning rate
+        double alpha = 0.5 / (1 + iteration / 1000);
+        double currentLearningRate = alpha * _learningRate;
 
         for(int k = 0; k < _inLength; k++){
 
@@ -104,7 +99,7 @@ public class FullyConnectedLayer extends Layer{
 
                 dLdw = dLdO[j]*dOdz*dzdw;
 
-                _weights[k][j] -= dLdw * _learningRate;
+                _weights[k][j] -= dLdw * currentLearningRate;
 
                 dLdX_sum += dLdO[j]*dOdz*dzdx;
 
@@ -113,13 +108,13 @@ public class FullyConnectedLayer extends Layer{
             dLdX[k] = dLdX_sum;
         }
 
-        if (_previousLayer != null) _previousLayer.backPropagation(dLdX);
+        if (_previousLayer != null) _previousLayer.backPropagation(dLdX, iteration);
     }
 
     @Override
-    public void backPropagation(List<double[][]> dLdO) {
+    public void backPropagation(List<double[][]> dLdO, int iteration) {
         double[] vector = matrixToVector(dLdO);
-        backPropagation(vector);
+        backPropagation(vector, iteration);
     }
 
     @Override

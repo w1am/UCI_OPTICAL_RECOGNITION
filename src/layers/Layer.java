@@ -19,8 +19,8 @@ public abstract class Layer {
     public abstract double[] getOutput(List<double[][]> input);
     public abstract double[] getOutput(double[] input);
 
-    public abstract void backPropagation(double[] dLdO);
-    public abstract void backPropagation(List<double[][]> dLdO);
+    public abstract void backPropagation(double[] dLdO, int iteration);
+    public abstract void backPropagation(List<double[][]> dLdO, int iteration);
 
     public abstract int getOutputLength();
     public abstract int getOutputRows();

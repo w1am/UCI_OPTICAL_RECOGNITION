@@ -160,13 +160,13 @@ public class ConvolutionLayer extends Layer{
     }
 
     @Override
-    public void backPropagation(double[] dLdO) {
+    public void backPropagation(double[] dLdO, int iteration) {
         List<double[][]> matrixInput = vectorToMatrix(dLdO, _inLength, _inRows, _inCols);
-        backPropagation(matrixInput);
+        backPropagation(matrixInput, iteration);
     }
 
     @Override
-    public void backPropagation(List<double[][]> dLdO) {
+    public void backPropagation(List<double[][]> dLdO, int iteration) {
 
         List<double[][]> filtersDelta = new ArrayList<>();
         List<double[][]> dLdOPreviousLayer= new ArrayList<>();
@@ -206,7 +206,7 @@ public class ConvolutionLayer extends Layer{
         }
 
         if(_previousLayer!= null){
-            _previousLayer.backPropagation(dLdOPreviousLayer);
+            _previousLayer.backPropagation(dLdOPreviousLayer, iteration);
         }
     }
 
