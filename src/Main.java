@@ -41,9 +41,9 @@ public class Main {
 
         // Early stopping helps to prevent over-fitting by stopping the training
         // process when the validation loss stops improving.
-        for(int i = 0; i < epochs; i++){
+        for(int epochIndex = 0; epochIndex < epochs; epochIndex++){
             shuffle(imagesTrain);
-            net.train(imagesTrain);
+            double averageCost = net.train(imagesTrain);
             rate = net.test(imagesTest);
 
             if (rate > bestAccuracy) {
@@ -54,7 +54,7 @@ public class Main {
                 if (count == wait) break;
             }
 
-            System.out.println("Success rate after round " + i + ": " + rate);
+            System.out.println("epoch: " + epochIndex + ", cost: " + averageCost + ", accuracy: " + rate);
         }
     }
 }

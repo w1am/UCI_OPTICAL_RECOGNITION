@@ -4,6 +4,7 @@ import data.Image;
 import layers.Layer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static data.MatrixUtility.add;
@@ -126,8 +127,11 @@ public class NeuralNetwork {
     /**
      * Trains the network on a list of images
      * @param images the list of images to train on
+     * @return the cost of the network
      */
-    public void train(List<Image> images) {
+    public double train(List<Image> images) {
+
+        List<Double> costs = new ArrayList<Double>();
 
         for (Image img:images) {
 
@@ -142,10 +146,19 @@ public class NeuralNetwork {
             // Calculate the error based on the output and the label of the image
             double[] dldO = getErrors(out, img.getLabel());
 
+            // Calculate the cost function
+            double cost = 0.5 * Arrays.stream(dldO).map(x -> x * x).sum();
+
+            // Add the cost to the array of costs
+            costs.add(cost);
+
             // Perform back propagation on fully connected layer
             _layers.get((_layers.size() - 1)).backPropagation(dldO);
 
         }
+
+        // Calculate and return the average cost
+        return costs.stream().mapToDouble(x -> x).average().getAsDouble();
 
     }
 
