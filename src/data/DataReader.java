@@ -2,7 +2,6 @@ package data;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -44,7 +43,13 @@ public class DataReader {
         return rotated;
     }
 
-    public List<Image> readData(String path) throws IOException {
+    /**
+     * Reads the data from the file and returns a list of images
+     * @param path the path to the file
+     * @param isTrain whether the data is for training or testing (used for two-fold test)
+     * @return a list of images
+     */
+    public List<Image> readData(String path, Boolean isTrain) {
         List<Image> images = new ArrayList<>();
         List<Double> allData = new ArrayList<>();
         Random random = new Random();
@@ -64,13 +69,14 @@ public class DataReader {
 
                 for (int row = 0; row < rows; row++) {
                     for (int col = 0; col < cols; col++) {
-                        data[row][col] = (double) Integer.parseInt(lineItems[i]);
+                        data[row][col] = Integer.parseInt(lineItems[i]);
                         allData.add(data[row][col]);
                         i++;
                     }
                 }
 
-                if (path.equals("src/data/train.csv")) {
+                // Augment the data by rotating it
+                if (isTrain) {
                     int direction = random.nextInt(2) + 1;
                     double[][] augmentedData = new double[rows][cols];
                     switch (direction) {

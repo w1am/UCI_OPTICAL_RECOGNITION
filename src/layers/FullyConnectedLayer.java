@@ -83,28 +83,40 @@ public class FullyConnectedLayer extends Layer{
         double dLdw;
         double dzdx;
 
-        // Calculate the adaptive learning rate
+        // Calculate the adaptive learning rate based on the current iteration
         double alpha = 0.5 / (1 + iteration / 1000);
         double currentLearningRate = alpha * _learningRate;
 
         for(int k = 0; k < _inLength; k++){
 
+            // Initialize a variable to store the sum of the gradients of the loss with respect
+            // to the output of this layer (dLdO) times the derivatives of the output
+            // with respect to the input (dOdz) times the weights (dzdw)
             double dLdX_sum = 0;
 
             for(int j = 0; j < _outLength; j++){
 
+                // Calculate the derivative of the output of this layer with respect to the input (dOdz), the derivative of
+                // the input of this layer with respect to the weight (dzdw), and the derivative of the output
+                // of this layer with respect to the weight (dzdx)
                 dOdz = derivativeLeakyReLU(lastZ[j]);
                 dzdw = lastX[k];
                 dzdx = _weights[k][j];
 
+                // Calculate the gradient of the loss with respect to the weight (dLdw) using the chain rule
                 dLdw = dLdO[j]*dOdz*dzdw;
 
+                // Update the weight using the gradient descent algorithm with the calculated learning rate
                 _weights[k][j] -= dLdw * currentLearningRate;
 
+                // Add the gradient of the loss with respect to the output of this layer times the derivatives
+                // of the output with respect to the input and the weight to the sum
                 dLdX_sum += dLdO[j]*dOdz*dzdx;
 
             }
 
+            // Store the sum of the gradients of the loss with respect to the output of this layer
+            // times the derivatives of the output with respect to the input and the weight in the dLdX array
             dLdX[k] = dLdX_sum;
         }
 
@@ -147,6 +159,11 @@ public class FullyConnectedLayer extends Layer{
         }
     }
 
+    /**
+     * Applies the leaky ReLU activation function to the input.
+     * @param input The input to the activation function
+     * @return The output of the activation function
+     */
     public double leakyReLU(double input) {
         final double alpha = 0.01;
         if (input > 0) {
@@ -156,6 +173,11 @@ public class FullyConnectedLayer extends Layer{
         }
     }
 
+    /**
+     * Calculates the derivative of the leaky ReLU activation function.
+     * @param input The input to the activation function
+     * @return The output of the activation function
+     */
     public double derivativeLeakyReLU(double input) {
         final double alpha = 0.01;
         if (input > 0) {

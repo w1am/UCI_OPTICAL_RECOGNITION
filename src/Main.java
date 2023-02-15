@@ -4,20 +4,19 @@ import network.NetworkBuilder;
 import network.NeuralNetwork;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Scanner;
 
 import static java.util.Collections.shuffle;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-
+    public void twoFoldTest(String foldOne, String foldTwo) {
         long SEED = 123;
 
-        System.out.println("Starting data loading...");
-
-        List<Image> imagesTrain = new DataReader().readData("src/data/train.csv");
-        List<Image> imagesTest = new DataReader().readData("src/data/test.csv");
+        List<Image> imagesTrain = new DataReader().readData(foldOne, true);
+        List<Image> imagesTest = new DataReader().readData(foldTwo, false);
 
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
@@ -54,8 +53,31 @@ public class Main {
                 if (count == wait) break;
             }
 
-//            System.out.println("epoch: " + epochIndex + ", cost: " + averageCost + ", accuracy: " + rate);
-            System.out.println(epochIndex + "," + rate + "," + averageCost);
+            // Round average cost to two decimal places
+            DecimalFormat df = new DecimalFormat("#.###");
+
+            System.out.println("epoch: " + epochIndex + ", cost: " + df.format(averageCost) + ", accuracy: " + df.format(rate));
+        }
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Run first fold? (y/n)");
+        String input = scanner.nextLine();
+        if (input.equals("y")) {
+            Main main = new Main();
+            main.twoFoldTest("src/data/train.csv", "src/data/test.csv");
+        }
+
+        System.out.println();
+
+        System.out.println("Run second fold? (y/n)");
+        input = scanner.nextLine();
+        if (input.equals("y")) {
+            Main main = new Main();
+            main.twoFoldTest("src/data/test.csv", "src/data/train.csv");
         }
     }
 }

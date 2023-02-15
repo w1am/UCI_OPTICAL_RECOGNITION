@@ -22,6 +22,10 @@ public class Image {
         this.label = label;
     }
 
+    /**
+     * Returns a string representation of the image
+     * @return string representation
+     */
     @Override
     public String toString(){
 

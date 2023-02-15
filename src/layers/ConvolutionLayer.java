@@ -58,7 +58,13 @@ public class ConvolutionLayer extends Layer{
 
     }
 
+    /**
+     * This method performs a convolution operation between a 2D input matrix and a 2D filter.
+     * @param list The 2D input matrix
+     * @return The output matrix obtained by convolving the input matrix with the filter
+     */
     public List<double[][]> convolutionForwardPass(List<double[][]> list){
+
         _lastInput = list;
 
         List<double[][]> output = new ArrayList<>();
@@ -74,14 +80,26 @@ public class ConvolutionLayer extends Layer{
 
     }
 
+    /**
+     * This method performs a convolution operation between a 2D input matrix and a 2D filter.
+     * The output matrix is calculated by sliding the filter over the input matrix with a specified step size,
+     * and computing the dot product between the filter and the corresponding sub-matrix of the input.
+     * @param input The 2D input matrix
+     * @param filter The 2D filter matrix
+     * @param stepSize The step size for the convolution operation
+     * @return The output matrix obtained by convolving the input matrix with the filter
+     **/
     private double[][] convolve(double[][] input, double[][] filter, int stepSize) {
 
+        // Calculate output matrix dimensions
         int outRows = (input.length - filter.length)/stepSize + 1;
         int outCols = (input[0].length - filter[0].length)/stepSize + 1;
 
+        // Store input matrix dimensions
         int inRows = input.length;
         int inCols = input[0].length;
 
+        // Store filter matrix dimensions
         int fRows = filter.length;
         int fCols = filter[0].length;
 
@@ -94,11 +112,12 @@ public class ConvolutionLayer extends Layer{
 
             outCol = 0;
 
+            // Loop through columns of input matrix
             for(int j = 0; j <= inCols - fCols; j+= stepSize){
 
                 double sum = 0.0;
 
-                //Apply Filter around this position
+                // Apply filter to input matrix at current position
                 for(int x = 0; x < fRows; x++){
                     for(int y = 0; y < fCols; y++){
                         int inputRowIndex = i+x;
@@ -109,6 +128,7 @@ public class ConvolutionLayer extends Layer{
                     }
                 }
 
+                // Store new value in output matrix
                 output[outRow][outCol] = sum;
                 outCol++;
             }
@@ -121,6 +141,13 @@ public class ConvolutionLayer extends Layer{
 
     }
 
+    /**
+    * Takes in a 2D array and returns a new 2D array that has been expanded by a step size.
+    * If the step size is 1, returns the input array. Otherwise, expands the input array
+    * by filling in the gaps with zeros.
+    * @param input the input 2D array to be expanded
+    * @return the expanded 2D array
+    **/
     public double[][] spaceArray(double[][] input){
 
         if(_stepsize == 1){
@@ -165,6 +192,12 @@ public class ConvolutionLayer extends Layer{
         backPropagation(matrixInput, iteration);
     }
 
+    /**
+    * Performs back propagation on the convolution layer by computing the gradients of the
+    * filters and the errors for the previous layer.
+    * @param dLdO List of gradients of the loss with respect to the output of the layer.
+    * @param iteration The current iteration number of the training process.
+    */
     @Override
     public void backPropagation(List<double[][]> dLdO, int iteration) {
 
@@ -200,7 +233,7 @@ public class ConvolutionLayer extends Layer{
 
         }
 
-        for(int f =0; f < _filters.size(); f++){
+        for(int f = 0; f < _filters.size(); f++){
             double[][] modified = add(filtersDelta.get(f), _filters.get(f));
             _filters.set(f,modified);
         }
@@ -210,6 +243,11 @@ public class ConvolutionLayer extends Layer{
         }
     }
 
+    /**
+     * Flips the array horizontally
+     * @param array the array to flip
+     * @return the flipped array
+     */
     public double[][] flipArrayHorizontal(double[][] array){
         int rows = array.length;
         int cols = array[0].length;
@@ -222,6 +260,11 @@ public class ConvolutionLayer extends Layer{
         return output;
     }
 
+    /**
+     * Flips the array vertically
+     * @param array the array to flip
+     * @return the flipped array
+     */
     public double[][] flipArrayVertical(double[][] array){
         int rows = array.length;
         int cols = array[0].length;
@@ -236,6 +279,14 @@ public class ConvolutionLayer extends Layer{
         return output;
     }
 
+    /**
+     * Returns the full convolution of the input and filter matrices.
+     * The output matrix dimensions are input.length + filter.length + 1 and input[0].length + filter[0].length + 1.
+     *
+     * @param input the input matrix to convolve
+     * @param filter the filter matrix to convolve with the input
+     * @return the output matrix resulting from the full convolution of the input and filter
+     */
     private double[][] fullConvolve(double[][] input, double[][] filter) {
 
         int outRows = (input.length + filter.length) + 1;
@@ -260,7 +311,7 @@ public class ConvolutionLayer extends Layer{
 
                 double sum = 0.0;
 
-                //Apply Filter around this position
+                // Apply filter around this position
                 for(int x = 0; x < fRows; x++){
                     for(int y = 0; y < fCols; y++){
                         int inputRowIndex = i+x;
