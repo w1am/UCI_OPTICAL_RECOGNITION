@@ -22,7 +22,7 @@ public class Main {
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
 
-        double LEARNING_RATE = 0.43;
+        double LEARNING_RATE = 0.41;
 
         NetworkBuilder builder = new NetworkBuilder(8,8,2*100);
         builder.addConvolutionLayer(13, 3, 1, LEARNING_RATE, SEED);
@@ -55,7 +55,7 @@ public class Main {
             }
 
 //            System.out.println("epoch: " + epochIndex + ", cost: " + averageCost + ", accuracy: " + rate);
-            System.out.println(epochIndex + "," + rate);
+            System.out.println(epochIndex + "," + rate + "," + averageCost);
         }
     }
 }
