@@ -3,7 +3,7 @@ package layers;
 import java.util.List;
 import java.util.Random;
 
-public class FullyConnectedLayer extends Layer{
+public class FullyConnected extends Layer{
 
     private final long SEED;
 
@@ -16,7 +16,7 @@ public class FullyConnectedLayer extends Layer{
     private double[] lastX;
 
 
-    public FullyConnectedLayer(int _inLength, int _outLength, long SEED, double learningRate) {
+    public FullyConnected(int _inLength, int _outLength, long SEED, double learningRate) {
         this._inLength = _inLength;
         this._outLength = _outLength;
         this.SEED = SEED;

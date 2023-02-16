@@ -3,7 +3,7 @@ package layers;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaxPoolLayer extends Layer{
+public class MaxPooling extends Layer{
 
     private final int _stepSize;
     private final int _windowSize;
@@ -16,7 +16,7 @@ public class MaxPoolLayer extends Layer{
     List<int[][]> _lastMaxCol;
 
 
-    public MaxPoolLayer(int _stepSize, int _windowSize, int _inLength, int _inRows, int _inCols) {
+    public MaxPooling(int _stepSize, int _windowSize, int _inLength, int _inRows, int _inCols) {
         this._stepSize = _stepSize;
         this._windowSize = _windowSize;
         this._inLength = _inLength;

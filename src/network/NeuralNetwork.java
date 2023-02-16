@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static data.MatrixUtility.add;
-import static data.MatrixUtility.multiply;
+import static helpers.MatrixUtility.add;
+import static helpers.MatrixUtility.multiply;
 
 public class NeuralNetwork {
 
@@ -68,17 +68,17 @@ public class NeuralNetwork {
 
     /**
      * Returns the index of the maximum value in the input array
-     * @param in the input array
+     * @param input the input array
      * @return the index of the maximum value
      */
-    private int getMaxIndex(double[] in){
+    private int getMaxIndex(double[] input){
 
         double max = 0;
         int index = 0;
 
-        for(int i = 0; i < in.length; i++){
-            if(in[i] >= max){
-                max = in[i];
+        for(int i = 0; i < input.length; i++){
+            if(input[i] >= max){
+                max = input[i];
                 index = i;
             }
 

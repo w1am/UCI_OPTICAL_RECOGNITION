@@ -1,9 +1,9 @@
 package network;
 
-import layers.ConvolutionLayer;
-import layers.FullyConnectedLayer;
+import layers.Convolution;
+import layers.FullyConnected;
 import layers.Layer;
-import layers.MaxPoolLayer;
+import layers.MaxPooling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +38,10 @@ public class NetworkBuilder {
      */
     public void addConvolutionLayer(int numFilters, int filterSize, int stepSize, double learningRate, long SEED){
         if(_layers.isEmpty()){
-            _layers.add(new ConvolutionLayer(filterSize, stepSize, 1, _inputRows, _inputCols, SEED, numFilters, learningRate));
+            _layers.add(new Convolution(filterSize, stepSize, 1, _inputRows, _inputCols, SEED, numFilters, learningRate));
         } else {
             Layer prev = _layers.get(_layers.size()-1);
-            _layers.add(new ConvolutionLayer(filterSize, stepSize, prev.getOutputLength(), prev.getOutputRows(), prev.getOutputCols(), SEED, numFilters, learningRate));
+            _layers.add(new Convolution(filterSize, stepSize, prev.getOutputLength(), prev.getOutputRows(), prev.getOutputCols(), SEED, numFilters, learningRate));
         }
     }
 
@@ -52,10 +52,10 @@ public class NetworkBuilder {
      */
     public void addMaxPoolLayer(int windowSize, int stepSize){
         if(_layers.isEmpty()){
-            _layers.add(new MaxPoolLayer(stepSize, windowSize, 1, _inputRows, _inputCols));
+            _layers.add(new MaxPooling(stepSize, windowSize, 1, _inputRows, _inputCols));
         } else {
             Layer prev = _layers.get(_layers.size()-1);
-            _layers.add(new MaxPoolLayer(stepSize, windowSize, prev.getOutputLength(), prev.getOutputRows(), prev.getOutputCols()));
+            _layers.add(new MaxPooling(stepSize, windowSize, prev.getOutputLength(), prev.getOutputRows(), prev.getOutputCols()));
         }
     }
 
@@ -67,10 +67,10 @@ public class NetworkBuilder {
      */
     public void addFullyConnectedLayer(int outLength, double learningRate, long SEED){
         if(_layers.isEmpty()) {
-            _layers.add(new FullyConnectedLayer(_inputCols * _inputRows, outLength, SEED, learningRate));
+            _layers.add(new FullyConnected(_inputCols * _inputRows, outLength, SEED, learningRate));
         } else {
             Layer prev = _layers.get(_layers.size() - 1);
-            _layers.add(new FullyConnectedLayer(prev.getOutputElements(), outLength, SEED, learningRate));
+            _layers.add(new FullyConnected(prev.getOutputElements(), outLength, SEED, learningRate));
         }
 
     }

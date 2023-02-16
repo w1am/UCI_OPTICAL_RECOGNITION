@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static data.MatrixUtility.add;
-import static data.MatrixUtility.multiply;
+import static helpers.MatrixUtility.add;
+import static helpers.MatrixUtility.multiply;
 
-public class ConvolutionLayer extends Layer{
+public class Convolution extends Layer{
 
     private final long SEED;
 
@@ -22,7 +22,7 @@ public class ConvolutionLayer extends Layer{
 
     private List<double[][]> _lastInput;
 
-    public ConvolutionLayer(int _filterSize, int _stepsize, int _inLength, int _inRows, int _inCols, long SEED, int numFilters, double learningRate) {
+    public Convolution(int _filterSize, int _stepsize, int _inLength, int _inRows, int _inCols, long SEED, int numFilters, double learningRate) {
         this._filterSize = _filterSize;
         this._stepsize = _stepsize;
         this._inLength = _inLength;

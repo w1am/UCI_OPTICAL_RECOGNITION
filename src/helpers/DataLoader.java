@@ -1,4 +1,6 @@
-package data;
+package helpers;
+
+import data.Image;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,7 +12,7 @@ import java.util.Random;
  * Z-score normalization: This method standardizes the values so that the mean is 0 and the standard deviation is 1.
  * The formula is x' = (x - mean) / standard deviation.
  */
-public class DataReader {
+public class DataLoader {
 
     private static final double DEGREE_OF_ROTATION = 0.14;
 

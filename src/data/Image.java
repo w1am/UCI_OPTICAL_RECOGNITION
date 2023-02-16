@@ -1,33 +1,22 @@
 package data;
 
-public class Image {
-
-    private double[][] data;
-    private final int label;
+public record Image(double[][] data, int label) {
 
     public double[][] getData() {
         return data;
-    }
-
-    public void setData(double[][] data) {
-        this.data = data;
     }
 
     public int getLabel() {
         return label;
     }
 
-    public Image(double[][] data, int label) {
-        this.data = data;
-        this.label = label;
-    }
-
     /**
      * Returns a string representation of the image
+     *
      * @return string representation
      */
     @Override
-    public String toString(){
+    public String toString() {
 
         StringBuilder s = new StringBuilder(label + ", \n");
 

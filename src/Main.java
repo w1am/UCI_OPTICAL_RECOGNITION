@@ -1,4 +1,4 @@
-import data.DataReader;
+import helpers.DataLoader;
 import data.Image;
 import network.NetworkBuilder;
 import network.NeuralNetwork;
@@ -13,25 +13,19 @@ import static java.util.Collections.shuffle;
 public class Main {
 
     public void twoFoldTest(String foldOne, String foldTwo) {
-        long SEED = 123;
-
-        List<Image> imagesTrain = new DataReader().readData(foldOne, true);
-        List<Image> imagesTest = new DataReader().readData(foldTwo, false);
+        List<Image> imagesTrain = new DataLoader().readData(foldOne, true);
+        List<Image> imagesTest = new DataLoader().readData(foldTwo, false);
 
         System.out.println("Images Train size: " + imagesTrain.size());
         System.out.println("Images Test size: " + imagesTest.size());
 
-        double LEARNING_RATE = 0.41;
-
-        NetworkBuilder builder = new NetworkBuilder(8,8,2*100);
-        builder.addConvolutionLayer(13, 3, 1, LEARNING_RATE, SEED);
-        builder.addMaxPoolLayer(2,1);
-        builder.addFullyConnectedLayer(10, LEARNING_RATE, SEED);
+        NetworkBuilder builder = new NetworkBuilder(Config.INPUT_ROWS, Config.INPUT_COLS, Config.SCALE_FACTOR);
+        builder.addConvolutionLayer(Config.NUM_FILTERS, Config.FILTER_SIZE, Config.STEP_SIZE, Config.LEARNING_RATE, Config.SEED);
+        builder.addMaxPoolLayer(Config.WINDOW_SIZE, Config.STEP_SIZE);
+        builder.addFullyConnectedLayer(Config.OUTPUT_LENGTH, Config.LEARNING_RATE, Config.SEED);
 
         NeuralNetwork net = builder.build();
 
-        int epochs = 200;
-        int wait = 15;
         double bestAccuracy = 0;
         int count = 0;
 
@@ -40,7 +34,7 @@ public class Main {
 
         // Early stopping helps to prevent over-fitting by stopping the training
         // process when the validation loss stops improving.
-        for(int epochIndex = 0; epochIndex < epochs; epochIndex++){
+        for(int epochIndex = 0; epochIndex < Config.EPOCHS; epochIndex++){
             shuffle(imagesTrain);
             double averageCost = net.train(epochIndex, imagesTrain);
             rate = net.test(imagesTest);
@@ -50,7 +44,7 @@ public class Main {
                 count = 0;
             } else {
                 count++;
-                if (count == wait) break;
+                if (count == Config.WAIT) break;
             }
 
             // Round average cost to two decimal places
