@@ -51,45 +51,42 @@ public class MaxPoolLayer extends Layer{
      * @return the number of rows in the output of the max pool layer
      */
     public double[][] pool(double[][] input){
-
         double[][] output = new double[getOutputRows()][getOutputCols()];
 
-        // Create two 2D arrays to keep track of the row and column indices of the maximum values in each window.
         int[][] maxRows = new int[getOutputRows()][getOutputCols()];
         int[][] maxCols = new int[getOutputRows()][getOutputCols()];
 
-        for(int r = 0; r < getOutputRows(); r+= _stepSize){
-            for(int c = 0; c < getOutputCols(); c+= _stepSize){
+        for (int row = 0, i = 0; row < getOutputRows(); row += _stepSize, i++) {
+            for (int col = 0, j = 0; col < getOutputCols(); col += _stepSize, j++) {
+                double max = input[row][col];
 
-                double max = 0.0;
-                maxRows[r][c] = -1;
-                maxCols[r][c] = -1;
+                // Perform the pooling operation
+                maxRows[i][j] = row;
+                maxCols[i][j] = col;
 
-                // Loop through each element in the current window.
-                for(int x = 0; x < _windowSize; x++){
-                    for(int y = 0; y < _windowSize; y++) {
-
-                        // If the current element is greater than the current maximum, update the maximum and index variables.
-                        if(max < input[r+x][c+y]){
-                            max = input[r+x][c+y];
-                            maxRows[r][c] = r+x;
-                            maxCols[r][c] = c+y;
-                        }
-
-                    }
+                // Find the maximum value in the window
+                if (input[row][col + 1] > max) {
+                    max = input[row][col + 1]; maxRows[i][j] = row; maxCols[i][j] = col + 1;
                 }
 
-                output[r][c] = max;
+                if (input[row + 1][col] > max) {
+                    max = input[row + 1][col]; maxRows[i][j] = row + 1; maxCols[i][j] = col;
+                }
 
+                if (input[row + 1][col + 1] > max) {
+                    max = input[row + 1][col + 1]; maxRows[i][j] = row + 1; maxCols[i][j] = col + 1;
+                }
+
+                // store the location of the max value
+                output[i][j] = max;
             }
         }
 
-        // Add the row and column index arrays to the lists for later use.
+        // Remember the last position of the max value
         _lastMaxRow.add(maxRows);
         _lastMaxCol.add(maxCols);
 
         return output;
-
     }
 
 
@@ -119,34 +116,37 @@ public class MaxPoolLayer extends Layer{
     @Override
     public void backPropagation(List<double[][]> dLdO, int iteration) {
 
-        List<double[][]> dXdL = new ArrayList<>();
+        List<double[][]> dXdL = new ArrayList<>(dLdO.size());
 
-        // Initialize a counter for the index of the dL/dO matrix being processed
+        final int outputRows = getOutputRows();
+        final int outputCols = getOutputCols();
+
         int l = 0;
-
-        for(double[][] array: dLdO){
+        for (double[][] array : dLdO) {
             double[][] error = new double[_inRows][_inCols];
 
-            // Loop through each element in the output matrix
-            for(int r = 0; r < getOutputRows(); r++){
-                for(int c = 0; c < getOutputCols(); c++){
-                    // Find the index of the max element in the corresponding input submatrix
-                    int max_i = _lastMaxRow.get(l)[r][c];
-                    int max_j = _lastMaxCol.get(l)[r][c];
+            // Find where the error came from and add it to the error matrix
+            final int outputSize = outputRows * outputCols;
+            for (int i = 0; i < outputSize; i++) {
+                final int row = i / outputCols;
+                final int col = i % outputCols;
 
-                    if (max_i != -1) {
-                        // Add the corresponding element from the dL/dO matrix to the error matrix
-                        error[max_i][max_j] += array[r][c];
-                    }
+                // Get previous x and y position of the max value
+                final int max_i = _lastMaxRow.get(l)[row][col];
+                final int max_j = _lastMaxCol.get(l)[row][col];
+
+                // If there was a max value, add the corresponding coordinate to where our max value came from
+                // Then add the error to the error matrix
+                if (max_i != -1) {
+                    error[max_i][max_j] += array[row][col];
                 }
             }
 
-            // Add the error matrix to the list of dX/dL matrices
             dXdL.add(error);
             l++;
         }
 
-        if(_previousLayer!= null){
+        if (_previousLayer != null) {
             _previousLayer.backPropagation(dXdL, iteration);
         }
 

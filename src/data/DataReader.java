@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public class DataReader {
 
-    private static final double DEGREE_OF_ROTATION = 0.13;
+    private static final double DEGREE_OF_ROTATION = 0.14;
 
     public double[][] rotateRight(double[][] data, int rows, int cols) {
         double[][] rotatedData = new double[rows][cols];

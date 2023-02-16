@@ -90,64 +90,53 @@ public class ConvolutionLayer extends Layer{
      * @return The output matrix obtained by convolving the input matrix with the filter
      **/
     private double[][] convolve(double[][] input, double[][] filter, int stepSize) {
-
         // Calculate output matrix dimensions
-        int outRows = (input.length - filter.length)/stepSize + 1;
-        int outCols = (input[0].length - filter[0].length)/stepSize + 1;
+        int outRows = (input.length - filter.length) / stepSize + 1;
+        int outCols = (input[0].length - filter[0].length) / stepSize + 1;
 
-        // Store input matrix dimensions
-        int inRows = input.length;
-        int inCols = input[0].length;
-
-        // Store filter matrix dimensions
+        // Store the filter matrix
         int fRows = filter.length;
         int fCols = filter[0].length;
 
         double[][] output = new double[outRows][outCols];
 
-        int outRow = 0;
-        int outCol;
-
-        for(int i = 0; i <= inRows - fRows; i += stepSize){
-
-            outCol = 0;
-
-            // Loop through columns of input matrix
-            for(int j = 0; j <= inCols - fCols; j+= stepSize){
-
+        for (int i = 0; i < outRows; i++) {
+            for (int j = 0; j < outCols; j++) {
                 double sum = 0.0;
 
-                // Apply filter to input matrix at current position
-                for(int x = 0; x < fRows; x++){
-                    for(int y = 0; y < fCols; y++){
-                        int inputRowIndex = i+x;
-                        int inputColIndex = j+y;
+                int rowOffset = i * stepSize;
+                int colOffset = j * stepSize;
 
-                        double value = filter[x][y] * input[inputRowIndex][inputColIndex];
-                        sum+= value;
+                // Apply filter to input matrix at current position
+                for (int x = 0; x < fRows; x++) {
+                    int inputRowIndex = rowOffset + x;
+
+                    double[] inputRow = input[inputRowIndex];
+                    double[] filterRow = filter[x];
+
+                    for (int y = 0; y < fCols; y++) {
+                        int inputColIndex = colOffset + y;
+
+                        // Multiply filter value with corresponding input value and add to sum
+                        double value = filterRow[y] * inputRow[inputColIndex];
+                        sum += value;
                     }
                 }
 
-                // Store new value in output matrix
-                output[outRow][outCol] = sum;
-                outCol++;
+                output[i][j] = sum;
             }
-
-            outRow++;
-
         }
 
         return output;
-
     }
 
     /**
-    * Takes in a 2D array and returns a new 2D array that has been expanded by a step size.
-    * If the step size is 1, returns the input array. Otherwise, expands the input array
-    * by filling in the gaps with zeros.
-    * @param input the input 2D array to be expanded
-    * @return the expanded 2D array
-    **/
+     * Takes in a 2D array and returns a new 2D array that has been expanded by a step size.
+     * If the step size is 1, returns the input array. Otherwise, expands the input array
+     * by filling in the gaps with zeros.
+     * @param input the input 2D array to be expanded
+     * @return the expanded 2D array
+     **/
     public double[][] spaceArray(double[][] input){
 
         if(_stepsize == 1){
@@ -193,51 +182,61 @@ public class ConvolutionLayer extends Layer{
     }
 
     /**
-    * Performs back propagation on the convolution layer by computing the gradients of the
-    * filters and the errors for the previous layer.
-    * @param dLdO List of gradients of the loss with respect to the output of the layer.
-    * @param iteration The current iteration number of the training process.
-    */
+     * Performs back propagation on the convolution layer by computing the gradients of the
+     * filters and the errors for the previous layer.
+     * @param dLdO List of gradients of the loss with respect to the output of the layer.
+     * @param iteration The current iteration number of the training process.
+     */
     @Override
     public void backPropagation(List<double[][]> dLdO, int iteration) {
 
+        // Initialize list to store changes in each filter
         List<double[][]> filtersDelta = new ArrayList<>();
-        List<double[][]> dLdOPreviousLayer= new ArrayList<>();
-
         for(int f = 0; f < _filters.size(); f++){
             filtersDelta.add(new double[_filterSize][_filterSize]);
         }
 
+        // Initialize list to store error from previous layer
+        List<double[][]> dLdOPreviousLayer= new ArrayList<>();
+
+        // Loop through each input in the previous layer
         for(int i = 0; i < _lastInput.size(); i++){
 
+            // Initialize array to store error for this input
             double[][] errorForInput = new double[_inRows][_inCols];
 
+            // Loop through each filter in the current layer
             for(int f = 0; f < _filters.size(); f++){
 
+                // Get the current filter and the error for the current filter
                 double[][] currFilter = _filters.get(f);
                 double[][] error = dLdO.get(i*_filters.size() + f);
 
+                // Calculate delta for the current filter
                 double[][] spacedError = spaceArray(error);
                 double[][] dLdF = convolve(_lastInput.get(i), spacedError, 1);
-
                 double[][] delta = multiply(dLdF, _learningRate*-1);
+
+                // Update filter delta for the current filter
                 double[][] newTotalDelta = add(filtersDelta.get(f), delta);
                 filtersDelta.set(f, newTotalDelta);
 
+                // Calculate error for the previous layer
                 double[][] flippedError = flipArrayHorizontal(flipArrayVertical(spacedError));
                 errorForInput = add(errorForInput, fullConvolve(currFilter, flippedError));
-
             }
 
+            // Add the error for this input to the list of errors for the previous layer
             dLdOPreviousLayer.add(errorForInput);
-
         }
 
+        // Update filters for the current layer
         for(int f = 0; f < _filters.size(); f++){
             double[][] modified = add(filtersDelta.get(f), _filters.get(f));
             _filters.set(f,modified);
         }
 
+        // Recursively call backpropagation on previous layer
         if(_previousLayer!= null){
             _previousLayer.backPropagation(dLdOPreviousLayer, iteration);
         }
